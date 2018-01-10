@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="Verb server">
+
+        <EditTextPreference
+            android:defaultValue="@string/default_url"
+            android:key="pref_url"
+            android:persistent="true"
+            android:title="URL for verbs" />
+
+        <Preference
+            android:key="pref_refresh"
+            android:title="@string/action_refresh" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

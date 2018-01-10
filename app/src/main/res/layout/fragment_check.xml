@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="started"
+            type="boolean" />
+
+        <variable
+            name="answerPending"
+            type="boolean" />
+
+        <variable
+            name="verb"
+            type="com.jeppsson.japaneseverbs.db.Verb2" />
+
+        <variable
+            name="checkCallback"
+            type="com.jeppsson.japaneseverbs.ui.CheckClickCallback" />
+
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:gravity="center"
+            android:onClick="@{() -> checkCallback.onStartClick()}"
+            android:text="Tap to start"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            app:visibleGone="@{!started}" />
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:onClick="@{() -> checkCallback.onVerbClick()}"
+            app:visibleGone="@{started}"
+            tools:context="com.jeppsson.japaneseverbs.ui.CheckActivity">
+
+            <TextView
+                android:id="@+id/english"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="@{verb.meaning}"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                app:layout_constraintBottom_toTopOf="@+id/form"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed" />
+
+            <TextView
+                android:id="@+id/form"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/english"
+                android:text="@{verb.form}"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                app:layout_constraintBottom_toTopOf="@+id/kanji"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/english"
+                app:layout_constraintVertical_chainStyle="packed" />
+
+            <TextView
+                android:id="@+id/kanji"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@{verb.kanji}"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                app:layout_constraintBottom_toTopOf="@+id/furigana"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/form"
+                app:layout_constraintVertical_chainStyle="packed"
+                app:visibleHide="@{!answerPending}" />
+
+            <TextView
+                android:id="@+id/furigana"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{verb.furigana}"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                app:layout_constraintBottom_toTopOf="@+id/latin"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/kanji"
+                app:layout_constraintVertical_chainStyle="packed"
+                app:visibleHide="@{!answerPending}" />
+
+            <TextView
+                android:id="@+id/latin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{verb.romanji}"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/furigana"
+                app:layout_constraintVertical_chainStyle="packed"
+                app:visibleHide="@{!answerPending}" />
+
+        </android.support.constraint.ConstraintLayout>
+
+    </FrameLayout>
+
+</layout>
