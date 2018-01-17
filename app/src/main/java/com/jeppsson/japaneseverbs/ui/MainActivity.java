@@ -36,6 +36,17 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         checkAutoUpdate();
     }
 
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            setQuery(query);
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -47,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             SearchView searchView =
                     (SearchView) menu.findItem(R.id.search).getActionView();
             searchView.setOnQueryTextListener(this);
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         }
         return true;
     }
