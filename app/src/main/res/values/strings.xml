@@ -3,7 +3,7 @@
     <string name="settings">Settings</string>
     <string name="action_refresh">Refresh</string>
     <string name="default_url">https://raw.githubusercontent.com/jeppsson/japanese-verbs/master/verbs.csv</string>
-    <string name="check">Check</string>
+    <string name="check">Learn</string>
     <string name="search">Search</string>
 
 </resources>
