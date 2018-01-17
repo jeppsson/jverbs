@@ -5,7 +5,6 @@ import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
-import android.arch.persistence.room.Update;
 
 import java.util.List;
 
@@ -32,8 +31,10 @@ public interface VerbDao {
             + "verbs.kanji as kanji, verbs.romanji as romanji "
             + "FROM verbs "
             + "INNER JOIN forms ON form_id = tbl_form_id "
-            + "WHERE forms.dictionaryForm = 1")
-    LiveData<List<Verb3>> loadDictionaryVerbs();
+            + "WHERE forms.dictionaryForm = 1 "
+            + "AND (verbs.meaning LIKE :search OR verbs.romanji LIKE :search "
+            + "OR verbs.kanji LIKE :search OR verbs.furigana LIKE :search)")
+    LiveData<List<Verb3>> loadDictionaryVerbs(String search);
 
     @Query("SELECT verbs.meaning as meaning, forms.txt as form, "
             + "verbs.kanji as kanji, verbs.romanji as romanji, verbs.furigana as furigana "

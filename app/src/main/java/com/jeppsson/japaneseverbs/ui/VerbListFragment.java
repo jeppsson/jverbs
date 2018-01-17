@@ -4,6 +4,7 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MediatorLiveData;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
@@ -55,6 +56,11 @@ public class VerbListFragment extends Fragment {
         });
     }
 
+    public void setQuery(String query) {
+        MeaningListViewModel model = ViewModelProviders.of(this).get(MeaningListViewModel.class);
+        model.setQuery(query);
+    }
+
     private final VerbClickCallback mVerbClickCallback = new VerbClickCallback() {
         @Override
         public void onClick(long id) {
@@ -68,18 +74,26 @@ public class VerbListFragment extends Fragment {
 
     private static class MeaningListViewModel extends AndroidViewModel {
 
-        private final LiveData<List<Verb3>> mMeanings;
+        private final MediatorLiveData<List<Verb3>> mMeanings;
 
-        public MeaningListViewModel(@NonNull Application application) {
+        MeaningListViewModel(@NonNull Application application) {
             super(application);
+
+            mMeanings = new MediatorLiveData<>();
 
             VerbDao dao = VerbDatabase.getAppDatabase(getApplication()).verbDao();
 
-            mMeanings = dao.loadDictionaryVerbs();
+            mMeanings.addSource(dao.loadDictionaryVerbs("%"), mMeanings::setValue);
         }
 
         LiveData<List<Verb3>> getMeanings() {
             return mMeanings;
+        }
+
+        void setQuery(String query) {
+            VerbDao dao = VerbDatabase.getAppDatabase(getApplication()).verbDao();
+
+            mMeanings.addSource(dao.loadDictionaryVerbs('%' + query + '%'), mMeanings::setValue);
         }
     }
 }

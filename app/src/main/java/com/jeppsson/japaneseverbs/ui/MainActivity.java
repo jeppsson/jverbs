@@ -1,12 +1,13 @@
 package com.jeppsson.japaneseverbs.ui;
 
+import android.app.SearchManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -17,9 +18,10 @@ import com.jeppsson.japaneseverbs.R;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
 
     private static final long AUTO_UPDATE_PERIOD = 30 * 24 * 60 * 60 * 1000L; // 30 days
+    private static final String TAG_FRAGMENT = "VERB_LIST_FRAGMENT";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -27,10 +29,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         if (savedInstanceState == null) {
-            VerbListFragment fragment = new VerbListFragment();
-
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.fragment_container, fragment).commit();
+                    .add(R.id.fragment_container, new VerbListFragment(), TAG_FRAGMENT).commit();
         }
 
         checkAutoUpdate();
@@ -39,6 +39,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        // Associate searchable configuration with the SearchView
+        SearchManager searchManager =
+                (SearchManager) getSystemService(SEARCH_SERVICE);
+        if (searchManager != null) {
+            SearchView searchView =
+                    (SearchView) menu.findItem(R.id.search).getActionView();
+            searchView.setOnQueryTextListener(this);
+        }
         return true;
     }
 
@@ -55,6 +64,25 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        setQuery(newText);
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        setQuery(query);
+        return false;
+    }
+
+    private void setQuery(String query) {
+        VerbListFragment fragment = (VerbListFragment) getSupportFragmentManager().findFragmentByTag(TAG_FRAGMENT);
+        if (fragment != null) {
+            fragment.setQuery(query);
+        }
     }
 
     private void checkAutoUpdate() {
