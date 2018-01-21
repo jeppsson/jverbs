@@ -24,6 +24,11 @@ import java.util.Random;
 
 public class CheckFragment extends Fragment implements CheckClickCallback {
 
+    private static final boolean RESTORE_STATE = false;
+    private static final String STATE_STARTED = "started";
+    private static final String STATE_ANSWER_PENDING = "answerPending";
+    private static final String STATE_VERB_ID = "verbId";
+
     private FragmentCheckBinding mBinding;
     private VerbViewModel mModel;
 
@@ -40,6 +45,11 @@ public class CheckFragment extends Fragment implements CheckClickCallback {
         super.onActivityCreated(savedInstanceState);
 
         mModel = ViewModelProviders.of(this).get(VerbViewModel.class);
+        if (RESTORE_STATE && savedInstanceState != null) {
+            mModel.started = savedInstanceState.getBoolean(STATE_STARTED);
+            mModel.answerPending = savedInstanceState.getBoolean(STATE_ANSWER_PENDING);
+            mModel.mVerbId = savedInstanceState.getInt(STATE_VERB_ID);
+        }
         mModel.verbs.observe(this, verbs -> {
             if (verbs != null && verbs.size() > 0) {
                 mBinding.setVerb(mModel.getVerb());
@@ -48,6 +58,15 @@ public class CheckFragment extends Fragment implements CheckClickCallback {
 
         mBinding.setStarted(mModel.started);
         mBinding.setAnswerPending(mModel.answerPending);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putBoolean(STATE_STARTED, mModel.started);
+        outState.putBoolean(STATE_ANSWER_PENDING, mModel.answerPending);
+        outState.putInt(STATE_VERB_ID, mModel.mVerbId);
     }
 
     @Override
@@ -83,7 +102,6 @@ public class CheckFragment extends Fragment implements CheckClickCallback {
             super(application);
 
             VerbDao dao = VerbDatabase.getAppDatabase(getApplication()).verbDao();
-
             verbs = dao.loadAllVerbs();
         }
 
