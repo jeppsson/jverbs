@@ -89,7 +89,7 @@ public class CheckFragment extends Fragment implements CheckClickCallback {
         mBinding.setVerb(mModel.getVerb());
     }
 
-    private static class VerbViewModel extends AndroidViewModel {
+    public static class VerbViewModel extends AndroidViewModel {
 
         private final Random mRandom = new Random();
         private int mVerbId;

@@ -72,7 +72,7 @@ public class VerbListFragment extends Fragment {
         }
     };
 
-    private static class MeaningListViewModel extends AndroidViewModel {
+    public static class MeaningListViewModel extends AndroidViewModel {
 
         private final MediatorLiveData<List<Verb3>> mMeanings;
 
