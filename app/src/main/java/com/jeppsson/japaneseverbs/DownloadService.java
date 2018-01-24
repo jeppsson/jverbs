@@ -1,9 +1,10 @@
 package com.jeppsson.japaneseverbs;
 
-import android.content.Context;
+import android.app.IntentService;
+import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.jeppsson.japaneseverbs.db.Form;
@@ -23,31 +24,32 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DownloadTask extends AsyncTask<URL, Void, Void> {
+public class DownloadService extends IntentService {
 
-    private final VerbDao mDao;
-    private final SharedPreferences mPrefs;
-
-    public DownloadTask(Context context) {
-        mDao = VerbDatabase.getAppDatabase(context).verbDao();
-        mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+    public DownloadService() {
+        super(DownloadService.class.getSimpleName());
     }
 
     @Override
-    protected Void doInBackground(URL... urls) {
+    protected void onHandleIntent(@Nullable Intent intent) {
         HttpURLConnection urlConnection = null;
 
         try {
-            URL url = urls[0];
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+            String urlPref = prefs.getString("pref_url", getString(R.string.default_url));
+
+            URL url = new URL(urlPref);
             urlConnection = (HttpURLConnection) url.openConnection();
             InputStream in = new BufferedInputStream(urlConnection.getInputStream());
             if (url.getHost().equals(urlConnection.getURL().getHost())) {
 
                 CSVReader reader = new CSVReader(new InputStreamReader(in, "UTF-8"));
 
-                mDao.clearVerbs();
-                mDao.clearForms();
-                mDao.clearBase();
+                VerbDao dao = VerbDatabase.getAppDatabase(this).verbDao();
+
+                dao.clearVerbs();
+                dao.clearForms();
+                dao.clearBase();
 
                 // Add verb forms to db
                 List<Long> formIds = new ArrayList<>();
@@ -57,11 +59,11 @@ public class DownloadTask extends AsyncTask<URL, Void, Void> {
                         Form form = new Form();
                         form.txt = forms[i];
                         form.dictionaryForm = i == 0;
-                        long id = mDao.insertForm(form);
+                        long id = dao.insertForm(form);
                         formIds.add(id);
                     }
                 } else {
-                    return null;
+                    return;
                 }
 
                 // Add verbs
@@ -74,7 +76,7 @@ public class DownloadTask extends AsyncTask<URL, Void, Void> {
 
                     VerbBase base = new VerbBase();
                     base.verbId = verbId;
-                    long baseId = mDao.insertVerbBase(base);
+                    long baseId = dao.insertVerbBase(base);
 
                     for (int i = 0; i < verbs.length; i = i + 4) {
                         if (TextUtils.isEmpty(verbs[i])) {
@@ -89,13 +91,13 @@ public class DownloadTask extends AsyncTask<URL, Void, Void> {
                         verb.kanji = verbs[i + 1];
                         verb.furigana = verbs[i + 2];
                         verb.romanji = verbs[i + 3];
-                        mDao.insertVerb(verb);
+                        dao.insertVerb(verb);
                     }
 
                     verbId++;
                 }
 
-                mPrefs.edit().putLong(SettingsActivity.PREF_UPDATED, System.currentTimeMillis()).apply();
+                prefs.edit().putLong(SettingsActivity.PREF_UPDATED, System.currentTimeMillis()).apply();
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -104,8 +106,6 @@ public class DownloadTask extends AsyncTask<URL, Void, Void> {
                 urlConnection.disconnect();
             }
         }
-
-        return null;
     }
 }
 

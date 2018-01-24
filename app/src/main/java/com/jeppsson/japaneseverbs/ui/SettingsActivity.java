@@ -1,18 +1,15 @@
 package com.jeppsson.japaneseverbs.ui;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.Toast;
 
-import com.jeppsson.japaneseverbs.DownloadTask;
+import com.jeppsson.japaneseverbs.DownloadService;
 import com.jeppsson.japaneseverbs.R;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 
 public class SettingsActivity extends AppCompatActivity {
@@ -60,14 +57,7 @@ public class SettingsActivity extends AppCompatActivity {
         public boolean onPreferenceClick(Preference preference) {
             switch (preference.getKey()) {
                 case "pref_refresh":
-                    SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                    String urlPref = sharedPref.getString("pref_url", getString(R.string.default_url));
-                    try {
-                        new DownloadTask(getActivity()).execute(new URL(urlPref));
-                        return true;
-                    } catch (MalformedURLException e) {
-                        Toast.makeText(getActivity(), "URL format wrong", Toast.LENGTH_LONG).show();
-                    }
+                    getActivity().startService(new Intent(getActivity(), DownloadService.class));
                     return true;
             }
 

@@ -10,13 +10,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
-import com.jeppsson.japaneseverbs.DownloadTask;
+import com.jeppsson.japaneseverbs.DownloadService;
 import com.jeppsson.japaneseverbs.R;
-
-import java.net.MalformedURLException;
-import java.net.URL;
 
 public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
 
@@ -103,12 +99,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         long now = System.currentTimeMillis();
 
         if (updated + AUTO_UPDATE_PERIOD < now) {
-            String urlPref = prefs.getString("pref_url", getString(R.string.default_url));
-            try {
-                new DownloadTask(this).execute(new URL(urlPref));
-            } catch (MalformedURLException e) {
-                Toast.makeText(this, "URL format wrong", Toast.LENGTH_LONG).show();
-            }
+            startService(new Intent(this, DownloadService.class));
         }
     }
 }
