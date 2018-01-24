@@ -36,11 +36,6 @@
             android:parentActivityName=".ui.MainActivity"
             android:theme="@style/Theme.AppCompat.DayNight" />
         <activity
-            android:name=".ui.SettingsActivity"
-            android:label="@string/settings"
-            android:parentActivityName=".ui.MainActivity"
-            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar" />
-        <activity
             android:name=".ui.VerbDialogActivity"
             android:theme="@style/Theme.AppCompat.DayNight.Dialog.Alert" />
 

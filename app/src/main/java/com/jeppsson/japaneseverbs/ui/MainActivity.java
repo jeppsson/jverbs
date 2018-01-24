@@ -65,10 +65,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             case R.id.action_check:
                 startActivity(new Intent(this, CheckActivity.class));
                 return true;
-
-            case R.id.action_settings:
-                startActivity(new Intent(this, SettingsActivity.class));
-                return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -95,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     private void checkAutoUpdate() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        long updated = prefs.getLong(SettingsActivity.PREF_UPDATED, 0);
+        long updated = prefs.getLong(DownloadService.PREF_UPDATED, 0);
         long now = System.currentTimeMillis();
 
         if (updated + AUTO_UPDATE_PERIOD < now) {

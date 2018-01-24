@@ -12,7 +12,6 @@ import com.jeppsson.japaneseverbs.db.Verb;
 import com.jeppsson.japaneseverbs.db.VerbBase;
 import com.jeppsson.japaneseverbs.db.VerbDao;
 import com.jeppsson.japaneseverbs.db.VerbDatabase;
-import com.jeppsson.japaneseverbs.ui.SettingsActivity;
 import com.opencsv.CSVReader;
 
 import java.io.BufferedInputStream;
@@ -26,6 +25,8 @@ import java.util.List;
 
 public class DownloadService extends IntentService {
 
+    public static final String PREF_UPDATED = "updated";
+
     public DownloadService() {
         super(DownloadService.class.getSimpleName());
     }
@@ -35,10 +36,7 @@ public class DownloadService extends IntentService {
         HttpURLConnection urlConnection = null;
 
         try {
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-            String urlPref = prefs.getString("pref_url", getString(R.string.default_url));
-
-            URL url = new URL(urlPref);
+            URL url = new URL(getString(R.string.default_url));
             urlConnection = (HttpURLConnection) url.openConnection();
             InputStream in = new BufferedInputStream(urlConnection.getInputStream());
             if (url.getHost().equals(urlConnection.getURL().getHost())) {
@@ -97,7 +95,8 @@ public class DownloadService extends IntentService {
                     verbId++;
                 }
 
-                prefs.edit().putLong(SettingsActivity.PREF_UPDATED, System.currentTimeMillis()).apply();
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+                prefs.edit().putLong(PREF_UPDATED, System.currentTimeMillis()).apply();
             }
         } catch (IOException e) {
             e.printStackTrace();

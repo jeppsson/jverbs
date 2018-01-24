@@ -13,10 +13,4 @@
         android:orderInCategory="100"
         android:title="@string/check"
         app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/settings"
-        app:showAsAction="never" />
-
 </menu>
