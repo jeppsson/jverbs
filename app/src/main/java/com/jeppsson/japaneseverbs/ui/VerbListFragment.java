@@ -76,7 +76,7 @@ public class VerbListFragment extends Fragment {
 
         private final MediatorLiveData<List<Verb3>> mMeanings;
 
-        MeaningListViewModel(@NonNull Application application) {
+        public MeaningListViewModel(@NonNull Application application) {
             super(application);
 
             mMeanings = new MediatorLiveData<>();
