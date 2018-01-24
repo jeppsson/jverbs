@@ -23,3 +23,5 @@
 -dontwarn com.opencsv.**
 -dontwarn org.apache.commons.beanutils.**
 -dontwarn org.apache.commons.collections.**
+
+-keep class android.support.v7.widget.SearchView { *; }
