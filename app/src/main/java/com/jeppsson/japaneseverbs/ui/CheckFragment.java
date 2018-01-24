@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.jeppsson.japaneseverbs.R;
 import com.jeppsson.japaneseverbs.databinding.FragmentCheckBinding;
@@ -71,10 +72,15 @@ public class CheckFragment extends Fragment implements CheckClickCallback {
 
     @Override
     public void onStartClick() {
-        mModel.next();
-        mBinding.setStarted(true);
-        mBinding.setAnswerPending(true);
-        mBinding.setVerb(mModel.getVerb());
+        List<Verb2> verbs = mModel.verbs.getValue();
+        if (verbs == null || verbs.size() == 0) {
+            Toast.makeText(getContext(), "No verbs", Toast.LENGTH_SHORT).show();
+        } else {
+            mModel.next();
+            mBinding.setStarted(true);
+            mBinding.setAnswerPending(true);
+            mBinding.setVerb(mModel.getVerb());
+        }
     }
 
     @Override
