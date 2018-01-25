@@ -12,7 +12,6 @@ import com.jeppsson.japaneseverbs.databinding.VerbRowItemBinding;
 import com.jeppsson.japaneseverbs.db.Verb3;
 
 import java.util.List;
-import java.util.Objects;
 
 public class VerbAdapter extends RecyclerView.Adapter<VerbAdapter.VerbViewHolder> {
 
@@ -52,9 +51,9 @@ public class VerbAdapter extends RecyclerView.Adapter<VerbAdapter.VerbViewHolder
                     Verb3 newVerb = verbList.get(newItemPosition);
                     Verb3 oldVerb = mVerbList.get(oldItemPosition);
                     return newVerb.id == oldVerb.id
-                            && Objects.equals(newVerb.meaning, oldVerb.meaning)
-                            && Objects.equals(newVerb.kanji, oldVerb.kanji)
-                            && Objects.equals(newVerb.romanji, oldVerb.romanji);
+                            && isSame(newVerb.meaning, oldVerb.meaning)
+                            && isSame(newVerb.kanji, oldVerb.kanji)
+                            && isSame(newVerb.romanji, oldVerb.romanji);
                 }
             });
             mVerbList = verbList;
@@ -91,5 +90,9 @@ public class VerbAdapter extends RecyclerView.Adapter<VerbAdapter.VerbViewHolder
             super(binding.getRoot());
             mBinding = binding;
         }
+    }
+
+    private static boolean isSame(Object a, Object b) {
+        return (a == b) || (a != null && a.equals(b));
     }
 }
